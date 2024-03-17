@@ -1,7 +1,7 @@
 # Book-Management-System
 Book Management System backend using Express and MongoDB contains various endpoints that will help to manage library users and work with library data. The application will provide an endpoint for user management. API will be able to register users, authenticate users, borrow books, return books, create books, pay fine .
 
-##Prerequisites:
+## Prerequisites:
 1. Node.js
 2. Express.js
 3. MongoDB
@@ -28,21 +28,48 @@ Book Management System backend using Express and MongoDB contains various endpoi
 8. **Return Book:** Allow user to return borrowed book back to system.
 9. **Pay fine:** Pay fine if charged for book.
 
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:5000](http://localhost:5000) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+### Install All dependencies
+#### `npm install`
+
+### To create a environment file
+Setup a database and give a scecret key jwt authentication.
+
+### To run a application
+#### `npm start`
+
 ## List of All API links :
-.. http://localhost:5000/
-.. http://localhost:5000/register
-.. http://localhost:5000/login
-.. http://localhost:5000/logout
-.. http://localhost:5000/session
-.. http://localhost:5000/getdetails
-.. http://localhost:5000/getbooks
-.. http://localhost:5000/getusers
-.. http://localhost:5000/createbook
-.. http://localhost:5000/borrowbook
-.. http://localhost:5000/returnbook
-.. http://localhost:5000/payfine
-.. http://localhost:5000/admin/register
-.. http://localhost:5000/admin/register
+1. http://localhost:5000/
+2. http://localhost:5000/register
+3. http://localhost:5000/login
+4. http://localhost:5000/logout
+5. http://localhost:5000/session
+6. http://localhost:5000/getdetails
+7. http://localhost:5000/getbooks
+8. http://localhost:5000/getusers
+9. http://localhost:5000/createbook
+10. http://localhost:5000/borrowbook
+11. http://localhost:5000/returnbook
+12. http://localhost:5000/payfine
+13. http://localhost:5000/admin/register
+14. http://localhost:5000/admin/register
 
 ## Output:
 

@@ -1,5 +1,5 @@
 require("dotenv").config();
-const jwt= require('jsonIbtoken');
+const jwt= require('jsonwebtoken');
 const Admin= require("../model/admin_model");
 
 const auth = async (req, res, next) =>{

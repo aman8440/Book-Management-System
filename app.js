@@ -37,6 +37,9 @@ app.use(session({
         autoRemoveInterval: 1
     })
 }));
+app.get('/', (req, res) => {
+    res.send("Welcome To Library Management System");
+ });
  
 app.use('/', authRouter);
 app.use('/', libraryRouter);

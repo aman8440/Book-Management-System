@@ -5,9 +5,7 @@ const {CreatebookFunction, borrow, returnFunction, fineFunction}= require('../co
 const {User}= require('../model/user_model');
 const {Book}= require('../model/book_model');
 
-router.get('/', (req, res) => {
-   res.send("Welcome To Library Management System");
-});
+
 
 //route for getting all books from database
 router.get('/getbooks', async (req, res) => {

@@ -69,7 +69,9 @@ Setup a database and give a scecret key jwt authentication.
 11. http://localhost:5000/returnbook
 12. http://localhost:5000/payfine
 13. http://localhost:5000/admin/register
-14. http://localhost:5000/admin/register
+14. http://localhost:5000/admin/login
+15. http://localhost:5000/admin/logout
+16. http://localhost:5000/admin/getdata
 
 ## Output:
 

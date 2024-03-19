@@ -3,41 +3,59 @@ const {User}= require('../model/user_model');
 const {Book}= require('../model/book_model');
 const {BorrowerRecord}= require('../model/borrow_book');
 const {ReturnRecord}= require('../model/return_model');
+const Admin= require('../model/admin_model');
 
-const CreatebookFunction= async (req,res)=>{
-   var book = new Book(req.body);
- 
-    //authentication
-    passport.authenticate("jwt", { session: false }, async (err, user) => {
-        if (err || !user) {
-            res.json({ status: 401, message: "Not Authorized" });
-        } else {
-            if (user.admin) {
-                //saving book to db
-                await book.save().then(
-                    function (saveres) {
-                        if (saveres) {
-                            res.json({ status: 200, message: saveres });
-                        }
-                    },
-                    function (err) {
-                        res.json({
-                            status: 500,
-                            message: "Internal Server Error",
-                        });
-                    }
-                );
-            } else {
-                res.json({
-                    status: 401,
-                    message: "You are not authorized to perform this action",
-                });
-            }
-        }
-    })(req, res);
+const CreatebookFunction = async (req, res) => {
+   try {
+      const Adminuser = await Admin.findOne({ email: req.body.adminid });
+     
+      if (!Adminuser) {
+          return res.status(404).json({ status: 404, message: "Admin not found" });
+      }
+
+      const data = await Book.findOne({ adminid: Adminuser._id.toString() });
+      var book = new Book({
+         name: req.body.name,
+         author: req.body.author,
+         genre: req.body.genre,
+         type: req.body.type,
+         available: req.body.available,
+         adminid: Adminuser._id.toString()
+      });
+       // Authentication
+       passport.authenticate("jwt", { session: false }, async (err, user) => {
+           if (err || !user) {
+               return res.status(401).json({ status: 401, message: "Not Authorized" });
+           }
+
+           if (user.admin) {
+               // Saving book to db
+               await book.save()
+                   .then(saveres => {
+                       if (saveres) {
+                           res.json({ status: 200, message: saveres });
+                       }
+                   })
+                   .catch(err => {
+                       res.status(500).json({ status: 500, message: "Internal Server Error" });
+                   });
+           } else {
+               res.status(401).json({ status: 401, message: "You are not authorized to perform this action" });
+           }
+       })(req, res);
+   } catch (error) {
+       res.status(500).json({ status: 500, message: error.message });
+   }
 }
 
+
 const borrow= async (req,res)=>{
+   const Adminuser = await Admin.findOne({ email: req.body.adminid });
+   if (!Adminuser) {
+         return res.status(404).json({ status: 404, message: "Admin not found" });
+   }
+
+   await BorrowerRecord.findOne({ adminid: Adminuser._id.toString() });
    var bookid = req.body.bookid;
    var borrowerusername = req.body.username;
 
@@ -49,11 +67,9 @@ const borrow= async (req,res)=>{
             if (user.admin) {
                User.findOne({ username: borrowerusername })
                   .then((user) => {
-                        console.log(user);
                         if (user) {
                            Book.findOne({ _id: bookid })
                               .then((book) => {
-                                    console.log("book");
                                     if (book) {
                                        if (book.available) {
                                           //creating and saving new borrower record in database.
@@ -61,6 +77,7 @@ const borrow= async (req,res)=>{
                                                 new BorrowerRecord({
                                                    username: user.username,
                                                    bookid: book["_id"],
+                                                   adminid: Adminuser._id.toString()
                                                 });
                                           newBorrowerRecord
                                                 .save()
@@ -140,6 +157,12 @@ const borrow= async (req,res)=>{
 };
 
 const returnFunction= async (req,res)=>{
+   const Adminuser = await Admin.findOne({ email: req.body.adminid });
+   if (!Adminuser) {
+         return res.status(404).json({ status: 404, message: "Admin not found" });
+   }
+
+   await ReturnRecord.findOne({ adminid: Adminuser._id.toString() });
    var bookid = req.body.bookid;
    var borrowerusername = req.body.username;
 
@@ -177,6 +200,7 @@ const returnFunction= async (req,res)=>{
                               bookid: bookid,
                               duedate: borrowrec.submitdate,
                               fine: fine,
+                              adminid: Adminuser._id.toString()
                            });
 
                            returnrec

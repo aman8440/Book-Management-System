@@ -2,6 +2,7 @@ const Admin = require('../model/admin_model');
 const bcrypt= require('bcryptjs');
 const jwt= require('jsonwebtoken'); 
 const cookieParser= require('cookie-parser');
+const asyncHandler = require('express-async-handler')
 
 const adminRegister= async (req,res)=>{
    try {
@@ -51,7 +52,8 @@ const adminLogin= async (req,res)=>{
               {
                   "status": "Authenticated",
                   "user": {
-                     "username": req.body.username,
+                     "_id": useremail._id,
+                     "username": useremail.username,
                      "email": req.body.email,
                   }
               
@@ -73,7 +75,8 @@ const adminLogin= async (req,res)=>{
               {
                   "status": "Authenticated",
                   "user": {
-                     "username": req.body.username,
+                    "_id": useremail._id,
+                     "username": useremail.username,
                      "email": req.body.email,
                   }
               
@@ -104,9 +107,42 @@ const adminLogin= async (req,res)=>{
       };
         res.json(responeObject);
    }
-}
+};
+
+
+const adminlogout= async (req,res)=>{
+  try {
+
+    req.user.tokens= req.user.tokens.filter((currElement) =>{
+        return currElement.token != req.token
+    })
+    res.clearCookie("registeruser");
+    console.log("logout successfully");
+    await req.user.save();
+    res.json({msg: "logout successfully"});
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const admingetdata= asyncHandler(async (req,res)=>{
+  try {
+    const user = await Admin.findById(req.user._id);
+    if(user){
+      const {_id, username, email}= user;
+      res.status(200).json({ _id, username, email });
+    }
+    else{
+      res.status(404).json({msg:"Admin not found"});
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+})
 
 module.exports= {
    adminRegister,
-   adminLogin
+   adminLogin,
+   adminlogout,
+   admingetdata
 };
